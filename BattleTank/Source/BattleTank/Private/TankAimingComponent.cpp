@@ -37,8 +37,28 @@ void UTankAimingComponent::SetBarrelReference(UStaticMeshComponent* Barrel)
 	this->Barrel = Barrel;
 }
 
-void UTankAimingComponent::AimAt(FVector Location)
+void UTankAimingComponent::AimAt(FVector EndLocation, float ProjectileSpeed)
 {
+	if (!Barrel) { return; }
 	auto BarrelLocation = Barrel->GetComponentLocation();
-	UE_LOG(LogTemp, Warning, TEXT("%s called AimAt(%s)"), *GetOwner()->GetName(), *Location.ToString())
+
+	FVector TossVelocity = FVector(0.0f);
+	auto StartLocation = Barrel->GetSocketLocation(FName("ProjectileStart"));
+
+	bool bIsValidTossVelocity = UGameplayStatics::SuggestProjectileVelocity(
+		this,
+		TossVelocity,
+		StartLocation,
+		EndLocation,
+		ProjectileSpeed,
+		ESuggestProjVelocityTraceOption::DoNotTrace
+	);
+
+	if (!bIsValidTossVelocity) { return; }
+
+	auto AimDirection = TossVelocity.GetSafeNormal().Rotation();
+
+	auto DeltaElevation = AimDirection - Barrel->GetForwardVector().Rotation();
+
+	UE_LOG(LogTemp, Warning, TEXT("%s : %s"), *GetOwner()->GetName(), *DeltaElevation.ToString())
 }

@@ -7,8 +7,8 @@ void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto PlayerTank = GetPlayerTank();
-	UE_LOG(LogTemp, Warning, TEXT("PlayerTank Found: %s"), *PlayerTank->GetName())
+	auto PlayerTank = GetControlledTank();
+	UE_LOG(LogTemp, Warning, TEXT("AITank Found: %s"), *PlayerTank->GetName())
 }
 
 void ATankAIController::Tick(float DeltaTime)

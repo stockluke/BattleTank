@@ -6,11 +6,6 @@
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	auto ControlledTank = Cast<ATank>(GetPawn());
-	UE_LOG(LogTemp, Warning, TEXT("ControlledTank Found: %s"), *ControlledTank->GetName())
-
-	
 }
 
 void ATankPlayerController::Tick(float DeltaTime)

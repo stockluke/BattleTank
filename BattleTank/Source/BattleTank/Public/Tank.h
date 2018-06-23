@@ -34,4 +34,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetBarrelReference(UStaticMeshComponent* Component);
+
+	UPROPERTY(EditAnywhere, Category = Firing)
+	float ProjectileSpeed = 10000; //TODO find good value
 };
