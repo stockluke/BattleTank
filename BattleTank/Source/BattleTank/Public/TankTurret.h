@@ -19,6 +19,6 @@ public:
 
 private:
 	// Maximum turret rotation rate in degrees per second
-	UPROPERTY(EditAnywhere, Category = Setup, meta = (ClampMin = 0))
+	UPROPERTY(EditDefaultsOnly, Category = Setup, meta = (ClampMin = 0))
 	float MaxRotationRate = 20.0f;
 };

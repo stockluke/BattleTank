@@ -19,14 +19,14 @@ public:
 	
 private:
 	// Minimum elevation in degrees
-	UPROPERTY(EditAnywhere, Category = Setup, meta = (UIMin = -90, UIMax = 90))
+	UPROPERTY(EditDefaultsOnly, Category = Setup, meta = (UIMin = -90, UIMax = 90))
 	float MinElevation = 0.0f;
 
 	// Maximum elevation in degrees
-	UPROPERTY(EditAnywhere, Category = Setup, meta = (UIMin = -90, UIMax = 90))
+	UPROPERTY(EditDefaultsOnly, Category = Setup, meta = (UIMin = -90, UIMax = 90))
 	float MaxElevation = 40.0f;
 
 	// Maximum barrel elevation rate in degrees per second
-	UPROPERTY(EditAnywhere, Category = Setup, meta = (ClampMin = 0))
+	UPROPERTY(EditDefaultsOnly, Category = Setup, meta = (ClampMin = 0))
 	float MaxElevationRate = 10.0f;
 };

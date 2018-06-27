@@ -47,9 +47,22 @@ void ATank::SetTurretReference(UTankTurret* Component)
 
 void ATank::Fire()
 {
+	bool bIsReloaded = (GetWorld()->GetTimeSeconds() - LastFireTime) > ReloadTime;
 	if (!Barrel) { return; }
-	UE_LOG(LogTemp, Warning, TEXT("%.3f: Fire!"), GetWorld()->GetTimeSeconds())
 
-	auto ProjectileStart = Barrel->GetSocketTransform(FName("ProjectileStart"));
-	GetWorld()->SpawnActor<AProjectile>(ProjectileBP, ProjectileStart);
+	if (bIsReloaded)
+	{
+		auto ProjectileStart = Barrel->GetSocketTransform(FName("ProjectileStart"));
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBP, ProjectileStart);
+		if (Projectile)
+		{
+			Projectile->LaunchProjectile(ProjectileSpeed);
+			LastFireTime = GetWorld()->GetTimeSeconds();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("The BP_Tank's projectile is not set"))
+		}
+	}
+	
 }
