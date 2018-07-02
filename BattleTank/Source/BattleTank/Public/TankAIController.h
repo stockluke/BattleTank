@@ -24,7 +24,8 @@ public:
 	void Tick(float DeltaTime) override;
 
 private:
-	void MoveTowardsPlayer(ATank* PlayerTank) const;
+	//Value to how close AI can get to player
+	float AcceptanceRadius = 3000.0f; //TODO Check good value
 
 	
 };

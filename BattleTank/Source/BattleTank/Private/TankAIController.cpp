@@ -18,14 +18,10 @@ void ATankAIController::Tick(float DeltaTime)
 
 	if (PlayerTank)
 	{
-		MoveTowardsPlayer(PlayerTank);
+		MoveToActor(PlayerTank, AcceptanceRadius);
 
 		ThisAITank->AimAt(PlayerTank->GetActorLocation());
-		ThisAITank->Fire();		
+		//ThisAITank->Fire();		
 	}
 }
 
-void ATankAIController::MoveTowardsPlayer(ATank* PlayerTank) const
-{
-
-}

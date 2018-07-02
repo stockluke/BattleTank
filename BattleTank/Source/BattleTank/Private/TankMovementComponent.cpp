@@ -16,13 +16,24 @@ void UTankMovementComponent::IntentMoveForward(float Throw)
 
 void UTankMovementComponent::IntentTurnRight(float Throw)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%.3f: Throw %f"), GetWorld()->GetTimeSeconds(), Throw)
-
 	if (!LeftTrack || !RightTrack) { return; }
 	LeftTrack->SetThrottle(Throw);
 	RightTrack->SetThrottle(-Throw);
 
 	//TODO prevent double input from other input
+}
+
+void UTankMovementComponent::RequestDirectMove(const FVector & MoveVelocity, bool bForceMaxSpeed)
+{
+	FVector AIForwardDirection = GetOwner()->GetActorForwardVector().GetSafeNormal();
+	FVector AIForwardIntention = MoveVelocity.GetSafeNormal();
+	float ForwardThrow = FVector::DotProduct(AIForwardDirection, AIForwardIntention);
+	float TurnThrow = FVector::CrossProduct(AIForwardDirection, AIForwardIntention).Z;
+
+	IntentMoveForward(ForwardThrow);
+	IntentTurnRight(TurnThrow);
+
+	UE_LOG(LogTemp, Warning, TEXT("%.3f: CrossProduct %f"), GetWorld()->GetTimeSeconds(), TurnThrow)
 }
 
 void UTankMovementComponent::Initialize(UTankTrack * LeftTrack, UTankTrack * RightTrack)
