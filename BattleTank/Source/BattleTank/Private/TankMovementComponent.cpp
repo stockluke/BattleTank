@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2018 No rights reserved
 
 #include "TankMovementComponent.h"
 #include "TankTrack.h"
@@ -7,7 +7,7 @@
 
 void UTankMovementComponent::IntentMoveForward(float Throw)
 {
-	if (!LeftTrack || !RightTrack) { return; }
+	if (!ensure(LeftTrack && RightTrack)) { return; }
 	LeftTrack->SetThrottle(Throw);
 	RightTrack->SetThrottle(Throw);
 
@@ -16,7 +16,7 @@ void UTankMovementComponent::IntentMoveForward(float Throw)
 
 void UTankMovementComponent::IntentTurnRight(float Throw)
 {
-	if (!LeftTrack || !RightTrack) { return; }
+	if (!ensure(LeftTrack && RightTrack)) { return; }
 	LeftTrack->SetThrottle(Throw);
 	RightTrack->SetThrottle(-Throw);
 
@@ -32,17 +32,11 @@ void UTankMovementComponent::RequestDirectMove(const FVector & MoveVelocity, boo
 
 	IntentMoveForward(ForwardThrow);
 	IntentTurnRight(TurnThrow);
-
-	UE_LOG(LogTemp, Warning, TEXT("%.3f: CrossProduct %f"), GetWorld()->GetTimeSeconds(), TurnThrow)
 }
 
 void UTankMovementComponent::Initialize(UTankTrack * LeftTrack, UTankTrack * RightTrack)
 {
-	if(!LeftTrack || !RightTrack)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Left or Right Track not set in UTankMovementComponent"))
-		return;
-	}
+	if(!ensure(LeftTrack && RightTrack)) { return; }
 	this->LeftTrack = LeftTrack;
 	this->RightTrack = RightTrack;
 }

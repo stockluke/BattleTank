@@ -7,7 +7,7 @@
 #include "AIController.h"
 #include "TankAIController.generated.h"
 
-class ATank;
+class UTankAimingComponent;
 
 /**
  * 
@@ -22,10 +22,8 @@ public:
 	void BeginPlay() override;
 
 	void Tick(float DeltaTime) override;
-
+	
 private:
 	//Value to how close AI can get to player
-	float AcceptanceRadius = 3000.0f; //TODO Check good value
-
-	
+	float AcceptanceRadius = 3000.0f; //TODO Check good value	
 };

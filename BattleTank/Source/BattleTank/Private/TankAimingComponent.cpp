@@ -2,8 +2,10 @@
 
 #include "TankAimingComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
+#include "Projectile.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -20,7 +22,6 @@ void UTankAimingComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-
 // Called every frame
 void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -34,7 +35,7 @@ void UTankAimingComponent::Initialize(UTankBarrel * Barrel, UTankTurret * Turret
 	this->Turret = Turret;
 }
 
-void UTankAimingComponent::AimAt(FVector EndLocation, float ProjectileSpeed)
+void UTankAimingComponent::AimAt(FVector EndLocation)
 {
 	if (!ensure(Barrel && Turret)) { return; }
 	FVector BarrelLocation = Barrel->GetComponentLocation();
@@ -64,4 +65,26 @@ void UTankAimingComponent::AimAt(FVector EndLocation, float ProjectileSpeed)
 
 	Barrel->ElevateBarrel(DeltaElevation.Pitch);
 	Turret->RotateTurret(DeltaElevation.Yaw);
+}
+
+void UTankAimingComponent::Fire()
+{
+	bool bIsReloaded = (GetWorld()->GetTimeSeconds() - LastFireTime) > ReloadTime;
+	if (!ensure(Barrel)) { return; }
+
+	if (bIsReloaded)
+	{
+		auto ProjectileStart = Barrel->GetSocketTransform(FName("ProjectileStart"));
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBP, ProjectileStart);
+		if (Projectile)
+		{
+			Projectile->LaunchProjectile(ProjectileSpeed);
+			LastFireTime = GetWorld()->GetTimeSeconds();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("The BP_Tank's projectile is not set"))
+		}
+	}
+
 }

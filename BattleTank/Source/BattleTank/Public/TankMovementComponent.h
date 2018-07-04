@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2018 No rights reserved
 
 #pragma once
 
@@ -9,7 +9,7 @@
 class UTankTrack;
 
 /**
- * 
+ * Responsible for driving the tank tracks
  */
 UCLASS( ClassGroup = (Custom), meta = (BlueprintSpawnableComponent) )
 class BATTLETANK_API UTankMovementComponent : public UNavMovementComponent
@@ -26,12 +26,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Input)
 	void IntentTurnRight(float Throw);
 
-	// TODO check best protection
+private:
+	// Called from the PathFinding logic by AI Controller(s)
 	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
 	
-private:
 	UTankTrack* LeftTrack;
 	UTankTrack* RightTrack;
-
-	
 };

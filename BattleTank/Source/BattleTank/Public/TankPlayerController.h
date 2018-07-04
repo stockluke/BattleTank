@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2018 No rights reserved
 
 #pragma once
 
@@ -6,10 +6,10 @@
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h" //Must be the last include
 
-class ATank;
+class UTankAimingComponent;
 
 /**
- * 
+ * Responsible for helping the player aim
  */
 UCLASS()
 class BATTLETANK_API ATankPlayerController : public APlayerController
@@ -21,9 +21,13 @@ public:
 
 	void Tick(float DeltaTime) override;
 
-private:
-	ATank * GetControlledTank() const;
+protected:
+	UFUNCTION(BlueprintImplementableEvent, Category = Setup)
+	void FoundAimingComponent(UTankAimingComponent* AimingComponent);
 
+	UTankAimingComponent* AimingComponent;
+
+private:
 	// Start the tank moving the barrel so that the shot would hit where
 	// the crosshair intersects the world
 	void AimTowardsCrosshair();
