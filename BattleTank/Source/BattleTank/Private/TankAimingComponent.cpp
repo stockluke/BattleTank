@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2018 No rights reserved
 
 #include "TankAimingComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -27,23 +27,20 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UTankAimingComponent::SetBarrelReference(UTankBarrel* Barrel)
+void UTankAimingComponent::Initialize(UTankBarrel * Barrel, UTankTurret * Turret)
 {
+	ensure(Barrel && Turret);
 	this->Barrel = Barrel;
-}
-
-void UTankAimingComponent::SetTurretReference(UTankTurret* Turret)
-{
 	this->Turret = Turret;
 }
 
 void UTankAimingComponent::AimAt(FVector EndLocation, float ProjectileSpeed)
 {
-	if (!Barrel) { return; }
-	auto BarrelLocation = Barrel->GetComponentLocation();
+	if (!ensure(Barrel && Turret)) { return; }
+	FVector BarrelLocation = Barrel->GetComponentLocation();
 
 	FVector TossVelocity = FVector(0.0f);
-	auto StartLocation = Barrel->GetSocketLocation(FName("ProjectileStart"));
+	FVector StartLocation = Barrel->GetSocketLocation(FName("ProjectileStart"));
 
 	bool bIsValidTossVelocity = UGameplayStatics::SuggestProjectileVelocity(
 		this,
@@ -62,8 +59,8 @@ void UTankAimingComponent::AimAt(FVector EndLocation, float ProjectileSpeed)
 		return; 
 	}
 
-	auto AimDirection = TossVelocity.GetSafeNormal().Rotation();
-	auto DeltaElevation = AimDirection - Barrel->GetForwardVector().Rotation();
+	FRotator AimDirection = TossVelocity.GetSafeNormal().Rotation();
+	FRotator DeltaElevation = AimDirection - Barrel->GetForwardVector().Rotation();
 
 	Barrel->ElevateBarrel(DeltaElevation.Pitch);
 	Turret->RotateTurret(DeltaElevation.Yaw);
