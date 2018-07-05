@@ -23,7 +23,8 @@ public:
 
 	void Tick(float DeltaTime) override;
 	
-private:
+protected:
 	//Value to how close AI can get to player
-	float AcceptanceRadius = 3000.0f; //TODO Check good value	
+	UPROPERTY(EditDefaultsOnly, Category = Setup, meta = (ClampMin = 0))
+	float AcceptanceRadius = 8000.0f;
 };

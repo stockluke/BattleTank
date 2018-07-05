@@ -47,6 +47,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Firing)
 	float ProjectileSpeed = 10000; //TODO find good value
 
+	EFiringState GetFiringState() const;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

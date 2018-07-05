@@ -25,14 +25,10 @@ void ATankPlayerController::AimTowardsCrosshair()
 	if (!ensure(AimingComponent)) { return; }
 
 	FVector HitLocation;
-	if (GetSightRayHitLocation(HitLocation))
+	bool bGotHitLocation = GetSightRayHitLocation(HitLocation);
+	if (bGotHitLocation)
 	{
 		AimingComponent->AimAt(HitLocation);
-		//UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"), *HitLocation.ToString())
-	}
-	else
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("HitLocation not found"))
 	}
 }
 
@@ -47,10 +43,10 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) cons
 	FVector WorldLocation, CrosshairDirection;
 	if (DeprojectScreenPositionToWorld(CrosshairPosition.X, CrosshairPosition.Y, WorldLocation, CrosshairDirection))
 	{
-		GetLookVectorHitLocation(CrosshairDirection, OutHitLocation);
+		return GetLookVectorHitLocation(CrosshairDirection, OutHitLocation);
 	}
 	
-	return true;
+	return false;
 }
 
 bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVector & HitLocation) const

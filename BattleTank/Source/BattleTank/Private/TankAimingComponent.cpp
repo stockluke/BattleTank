@@ -75,10 +75,18 @@ void UTankAimingComponent::AimAt(FVector EndLocation)
 	}
 
 	AimDirection = TossVelocity.GetSafeNormal().Rotation();
-	FRotator DeltaElevation = AimDirection - Barrel->GetForwardVector().Rotation();
-
-	Barrel->ElevateBarrel(DeltaElevation.Pitch);
-	Turret->RotateTurret(DeltaElevation.Yaw);
+	FRotator DeltaRotator = AimDirection - Barrel->GetForwardVector().Rotation();
+	
+	Barrel->ElevateBarrel(DeltaRotator.Pitch);
+	if (DeltaRotator.Yaw < 180 && DeltaRotator.Yaw > -180)
+	{
+		Turret->RotateTurret(DeltaRotator.Yaw);
+	}
+	else
+	{
+		Turret->RotateTurret(-DeltaRotator.Yaw);
+	}
+	
 }
 
 void UTankAimingComponent::Fire()
@@ -93,6 +101,11 @@ void UTankAimingComponent::Fire()
 		ProjectileActor->LaunchProjectile(ProjectileSpeed);
 		LastFireTime = GetWorld()->GetTimeSeconds();
 	}
+}
+
+EFiringState UTankAimingComponent::GetFiringState() const
+{
+	return FiringState;
 }
 
 bool UTankAimingComponent::IsBarrelMoving()
