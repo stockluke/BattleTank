@@ -56,6 +56,8 @@ protected:
 	EFiringState FiringState = EFiringState::Reloading;
 	
 private:
+	bool IsBarrelMoving();
+
 	// Sets the type of projectile
 	UPROPERTY(EditDefaultsOnly, Category = Firing)
 	TSubclassOf<AProjectile> ProjectileBP;
@@ -67,5 +69,6 @@ private:
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
 
-	float LastFireTime = 0.0 - ReloadTime;
+	double LastFireTime = 0.0;
+	FRotator AimDirection = FRotator(0.0f);
 };

@@ -20,12 +20,26 @@ UTankAimingComponent::UTankAimingComponent()
 void UTankAimingComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	LastFireTime = GetWorld()->GetTimeSeconds();
 }
 
 // Called every frame
 void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if ((GetWorld()->GetTimeSeconds() - LastFireTime) < ReloadTime)
+	{
+		FiringState = EFiringState::Reloading;
+	}
+	else if (IsBarrelMoving())
+	{
+		FiringState = EFiringState::Aiming;
+	}
+	else
+	{
+		FiringState = EFiringState::Locked;
+	}
 }
 
 void UTankAimingComponent::Initialize(UTankBarrel * Barrel, UTankTurret * Turret)
@@ -60,7 +74,7 @@ void UTankAimingComponent::AimAt(FVector EndLocation)
 		return; 
 	}
 
-	FRotator AimDirection = TossVelocity.GetSafeNormal().Rotation();
+	AimDirection = TossVelocity.GetSafeNormal().Rotation();
 	FRotator DeltaElevation = AimDirection - Barrel->GetForwardVector().Rotation();
 
 	Barrel->ElevateBarrel(DeltaElevation.Pitch);
@@ -69,22 +83,20 @@ void UTankAimingComponent::AimAt(FVector EndLocation)
 
 void UTankAimingComponent::Fire()
 {
-	bool bIsReloaded = (GetWorld()->GetTimeSeconds() - LastFireTime) > ReloadTime;
-	if (!ensure(Barrel)) { return; }
+	if (!ensure(Barrel && ProjectileBP)) { return; }
 
-	if (bIsReloaded)
+	if (FiringState != EFiringState::Reloading)
 	{
 		auto ProjectileStart = Barrel->GetSocketTransform(FName("ProjectileStart"));
-		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBP, ProjectileStart);
-		if (Projectile)
-		{
-			Projectile->LaunchProjectile(ProjectileSpeed);
-			LastFireTime = GetWorld()->GetTimeSeconds();
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("The BP_Tank's projectile is not set"))
-		}
-	}
+		auto ProjectileActor = GetWorld()->SpawnActor<AProjectile>(ProjectileBP, ProjectileStart);
 
+		ProjectileActor->LaunchProjectile(ProjectileSpeed);
+		LastFireTime = GetWorld()->GetTimeSeconds();
+	}
+}
+
+bool UTankAimingComponent::IsBarrelMoving()
+{
+	if (!ensure(Barrel)) { return false; }
+	return !Barrel->GetForwardVector().Equals(AimDirection.Vector(), 0.01);
 }
