@@ -114,7 +114,7 @@ EFiringState UTankAimingComponent::GetFiringState() const
 	return FiringState;
 }
 
-uint8 UTankAimingComponent::GetAmmoAmount() const
+int32 UTankAimingComponent::GetAmmoAmount() const
 {
 	return AmmoAmount;
 }

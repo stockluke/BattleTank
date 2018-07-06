@@ -51,7 +51,7 @@ public:
 	EFiringState GetFiringState() const;
 
 	UFUNCTION(BlueprintCallable, Category = Firing)
-	uint8 GetAmmoAmount() const;
+	int32 GetAmmoAmount() const;
 	
 
 protected:
@@ -73,12 +73,12 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = Firing)
 	float ReloadTime = 3.0f;
 
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	int32 AmmoAmount = 2;
+
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
 
 	double LastFireTime = 0.0;
 	FRotator AimDirection = FRotator(0.0f);
-
-	UPROPERTY(EditDefaultsOnly, Category = Firing)
-	uint8 AmmoAmount = 2;
 };
