@@ -28,7 +28,11 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if ((GetWorld()->GetTimeSeconds() - LastFireTime) < ReloadTime)
+	if (AmmoAmount < 1)
+	{
+		FiringState = EFiringState::Empty;
+	}
+	else if ((GetWorld()->GetTimeSeconds() - LastFireTime) < ReloadTime)
 	{
 		FiringState = EFiringState::Reloading;
 	}
@@ -93,19 +97,26 @@ void UTankAimingComponent::Fire()
 {
 	if (!ensure(Barrel && ProjectileBP)) { return; }
 
-	if (FiringState != EFiringState::Reloading)
+	if (FiringState != EFiringState::Reloading && FiringState != EFiringState::Empty)
 	{
 		auto ProjectileStart = Barrel->GetSocketTransform(FName("ProjectileStart"));
 		auto ProjectileActor = GetWorld()->SpawnActor<AProjectile>(ProjectileBP, ProjectileStart);
 
 		ProjectileActor->LaunchProjectile(ProjectileSpeed);
 		LastFireTime = GetWorld()->GetTimeSeconds();
+
+		AmmoAmount -= 1;
 	}
 }
 
 EFiringState UTankAimingComponent::GetFiringState() const
 {
 	return FiringState;
+}
+
+uint8 UTankAimingComponent::GetAmmoAmount() const
+{
+	return AmmoAmount;
 }
 
 bool UTankAimingComponent::IsBarrelMoving()
