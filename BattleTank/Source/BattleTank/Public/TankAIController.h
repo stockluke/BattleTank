@@ -27,4 +27,10 @@ protected:
 	//Value to how close AI can get to player
 	UPROPERTY(EditDefaultsOnly, Category = Setup, meta = (ClampMin = 0))
 	float AcceptanceRadius = 8000.0f;
+
+private:
+	virtual void SetPawn(APawn* InPawn) override;
+
+	UFUNCTION()
+	void OnPossessedTankDeath();
 };
